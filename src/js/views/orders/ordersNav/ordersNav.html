@@ -1,0 +1,20 @@
+<!--
+=============================================================================
+ Copyright (c) 2005, 2018 Oracle and/or its affiliates. All rights reserved.
+=============================================================================
+-->
+
+<div id="ordersNavigationModule">
+  <oj-navigation-list
+    id="ordersNavigation"
+    class="sca-sub-navigationlist oj-web-applayout-navbar oj-navigationlist-item-dividers oj-md-condense oj-md-justify-content-flex-start oj-margin-lg-bottom"
+    style="background-color: transparent;"
+    overflow="popup"
+    data="[[navDataSource]]"
+    edge="top"
+    item.renderer="[[oj.KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"
+    selection="{{router.stateId}}">
+  </oj-navigation-list>
+
+  <div id="ordersModule" data-bind="ojModule: { name: stateIdComp(), cacheKey: stateIdComp() === 'orders/ordersNav/search/search' ? 'orderSearch' : null }"></div>
+</div>

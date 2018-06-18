@@ -6,10 +6,11 @@
  * Your application specific code will go here
  */
 define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource',
-  'ojs/ojoffcanvas'],
+    'ojs/ojoffcanvas'
+  ],
   function(oj, ko) {
-     function ControllerViewModel() {
-       var self = this;
+    function ControllerViewModel() {
+      var self = this;
 
       // Media queries for repsonsive layouts
       var smQuery = oj.ResponsiveUtils.getFrameworkQuery(oj.ResponsiveUtils.FRAMEWORK_QUERY_KEY.SM_ONLY);
@@ -17,32 +18,96 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
       var mdQuery = oj.ResponsiveUtils.getFrameworkQuery(oj.ResponsiveUtils.FRAMEWORK_QUERY_KEY.MD_UP);
       self.mdScreen = oj.ResponsiveKnockoutUtils.createMediaQueryObservable(mdQuery);
 
-       // Router setup
-       self.router = oj.Router.rootInstance;
-       self.router.configure({
-         'dashboard': {label: 'Dashboard', isDefault: true},
-         'incidents': {label: 'Incidents'},
-         'customers': {label: 'Customers'},
-         'about': {label: 'About'}
-       });
+      // Router setup
+      self.router = oj.Router.rootInstance;
+      self.router.configure({
+        'dashboard': {
+          label: 'Dashboard',
+          value: 'dashboard',
+          isDefault: true
+        },
+        'orders': {
+          label: 'Orders',
+          value: 'orders/orders'
+        },
+        'incidents': {
+          label: 'Incidents',
+          value: 'incidents'
+        },
+        'customers': {
+          label: 'Customers',
+          value: 'customers'
+        },
+        'about': {
+          label: 'About',
+          value: 'about'
+        },
+        'error': {
+          value: 'about'
+        }
+      });
+
       oj.Router.defaults['urlAdapter'] = new oj.Router.urlParamAdapter();
 
+      self.currentPage = ko.observable();
+      self.router.stateId.subscribe((value) => {
+        if (value) {
+          if (self.router.currentValue()) self.currentPage(self.router.currentValue());
+          else self.currentPage('error');
+        }
+      }, 'valueChanged');
+
+      function getCurrentGlobalRouterState(router) {
+        if (router._childRouters.length) {
+          for (let i = 0; i < router._childRouters.length; i++) {
+            if (router._childRouters[i]._parentState === router.currentState().id) {
+              return getCurrentGlobalRouterState(router._childRouters[i]);
+            }
+          }
+
+          return router.currentState();
+        }
+
+        return router.currentState();
+      }
+
+      // Transition handler
+      oj.Router.transitionedToState.add(function(result) {
+        let state = getCurrentGlobalRouterState(self.router);
+        console.log(`Current page: ${state.id}`);
+      });
+
       // Navigation setup
-      var navData = [
-      {name: 'Dashboard', id: 'dashboard',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'},
-      {name: 'Incidents', id: 'incidents',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-fire-icon-24'},
-      {name: 'Customers', id: 'customers',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-people-icon-24'},
-      {name: 'About', id: 'about',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-info-icon-24'}
+      var navData = [{
+          name: 'Dashboard',
+          id: 'dashboard',
+          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'
+        },
+        {
+          name: 'Orders',
+          id: 'orders',
+          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-fire-icon-24'
+        },
+        {
+          name: 'Customers',
+          id: 'customers',
+          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-people-icon-24'
+        },
+        {
+          name: 'About',
+          id: 'about',
+          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-info-icon-24'
+        }
       ];
-      self.navDataSource = new oj.ArrayTableDataSource(navData, {idAttribute: 'id'});
+      self.navDataSource = new oj.ArrayTableDataSource(navData, {
+        idAttribute: 'id'
+      });
 
       // Drawer
       // Close offcanvas on medium and larger screens
-      self.mdScreen.subscribe(function() {oj.OffcanvasUtils.close(self.drawerParams);});
+      self.mdScreen.subscribe(function() {
+        oj.OffcanvasUtils.close(self.drawerParams);
+      });
       self.drawerParams = {
         displayMode: 'push',
         selector: '#navDrawer',
@@ -53,7 +118,9 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
         return oj.OffcanvasUtils.toggle(self.drawerParams);
       }
       // Add a close listener so we can move focus back to the toggle button when the drawer closes
-      $("#navDrawer").on("ojclose", function() { $('#drawerToggleButton').focus(); });
+      $("#navDrawer").on("ojclose", function() {
+        $('#drawerToggleButton').focus();
+      });
 
       // Header
       // Application Name used in Branding Area
@@ -74,8 +141,8 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
         new footerLink('Terms Of Use', 'termsOfUse', 'http://www.oracle.com/us/legal/terms/index.html'),
         new footerLink('Your Privacy Rights', 'yourPrivacyRights', 'http://www.oracle.com/us/legal/privacy/index.html')
       ]);
-     }
+    }
 
-     return new ControllerViewModel();
+    return new ControllerViewModel();
   }
 );
