@@ -45,6 +45,15 @@ requirejs.config(
 }
 );
 
+requirejs.onError = function (err) {
+    console.log('Something happened');
+    // if (err.requireType === 'timeout') {
+    //     console.log('modules: ' + err.requireModules);
+    // }
+    //
+    // throw err;
+};
+
 /**
  * A top-level require call executed by the Application.
  * Although 'ojcore' and 'knockout' would be loaded in any case (they are specified as dependencies
@@ -69,7 +78,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'ojs/ojknockout',
         );
       }
 
-      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready 
+      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready
       // event before executing any code that might interact with Cordova APIs or plugins.
       if ($(document.body).hasClass('oj-hybrid')) {
         document.addEventListener("deviceready", init);

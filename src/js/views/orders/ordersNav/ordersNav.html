@@ -16,5 +16,5 @@
     selection="{{router.stateId}}">
   </oj-navigation-list>
 
-  <div id="ordersModule" data-bind="ojModule: { name: stateIdComp(), cacheKey: stateIdComp() === 'orders/ordersNav/search/search' ? 'orderSearch' : null }"></div>
+  <div id="ordersModule" data-bind="ojModule: { name: currentPage() }"></div>
 </div>

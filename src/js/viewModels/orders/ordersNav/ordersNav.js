@@ -2,9 +2,7 @@
  * Copyright (c) 2014, 2017, Oracle and/or its affiliates.
  * The Universal Permissive License (UPL), Version 1.0
  */
-/*
- * Your customer ViewModel code goes here
- */
+
 define(
   ['ojs/ojcore', 'knockout', 'jquery', 'ojs/ojnavigationlist'],
   (oj, ko) => {
@@ -26,12 +24,12 @@ define(
           value: 'orders/ordersNav/mass/massApproval',
         },
       });
-      oj.Router.sync();
-      self.stateIdComp = ko.computed(() => {
-        if (self.router.stateId()) return self.router.currentValue(); else if (self.router.defaultStateId) {
-          return self.router.getState(self.router.defaultStateId).value;
-        } return self.router.states[0].value;
+
+      self.currentPage = ko.observable(self.router.getState('search').value);
+      self.router.stateId.subscribe((value) => {
+        if (value && self.router.currentValue()) self.currentPage(self.router.currentValue());
       });
+      oj.Router.sync();
 
       // Navigation setup
       const navData = [
@@ -88,11 +86,6 @@ define(
       self.handleDetached = () => {};
     }
 
-    /*
-     * Returns a constructor for the ViewModel so that the ViewModel is constructed
-     * each time the view is displayed.  Return an instance of the ViewModel if
-     * only one instance of the ViewModel is needed.
-     */
     return new OrdersNavigationViewModel();
   }
 );

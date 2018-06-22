@@ -11,7 +11,6 @@ define(
      */
     function OrdersViewModel() {
       const self = this;
-      self.notifications = ko.observableArray([]);
 
       // Sub router
       self.router = oj.Router.rootInstance.createChildRouter('orders', 'orders').configure({
@@ -33,17 +32,7 @@ define(
        * @return {Promise|undefined} - If the callback returns a Promise, the next phase (attaching DOM) will be delayed until
        * the promise is resolved
        */
-      self.handleActivated = () => {
-        const routerSyncPromise = oj.Router.sync().then(() => {
-          self.stateIdComp = ko.computed(() => {
-            if (self.router.stateId()) return self.router.currentValue(); else if (self.router.defaultStateId) {
-              return self.router.getState(self.router.defaultStateId).value;
-            } return self.router.states[0].value;
-          });
-        });
-
-        return routerSyncPromise;
-      };
+      self.handleActivated = () => {};
 
       /**
        * Optional ViewModel method invoked after the View is inserted into the

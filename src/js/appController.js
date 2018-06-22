@@ -2,9 +2,7 @@
  * Copyright (c) 2014, 2018, Oracle and/or its affiliates.
  * The Universal Permissive License (UPL), Version 1.0
  */
-/*
- * Your application specific code will go here
- */
+
 define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource',
     'ojs/ojoffcanvas'
   ],
@@ -42,8 +40,8 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
           label: 'About',
           value: 'about'
         },
-        'error': {
-          value: 'about'
+        'notFound': {
+          value: 'notFound'
         }
       });
 
@@ -53,10 +51,10 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
       self.router.stateId.subscribe((value) => {
         if (value) {
           if (self.router.currentValue()) self.currentPage(self.router.currentValue());
-          else self.currentPage('error');
         }
       }, 'valueChanged');
 
+      // Gets the current general state of the Router
       function getCurrentGlobalRouterState(router) {
         if (router._childRouters.length) {
           for (let i = 0; i < router._childRouters.length; i++) {
@@ -73,8 +71,12 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
 
       // Transition handler
       oj.Router.transitionedToState.add(function(result) {
-        let state = getCurrentGlobalRouterState(self.router);
-        console.log(`Current page: ${state.id}`);
+        console.log(result);
+        if (result.hasChanged) {
+          let state = getCurrentGlobalRouterState(self.router);
+          if (state) console.log(`Current page: ${state.id}`);
+          else self.router.go('notFound');
+        }
       });
 
       // Navigation setup

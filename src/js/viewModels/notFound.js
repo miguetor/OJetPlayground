@@ -2,16 +2,12 @@
  * Copyright (c) 2014, 2018, Oracle and/or its affiliates.
  * The Universal Permissive License (UPL), Version 1.0
  */
-/*
- * Your about ViewModel code goes here
- */
-define(['ojs/ojcore', 'knockout', 'jquery'],
+
+define(['ojs/ojcore', 'knockout', 'jquery', 'ojs/ojbutton'],
  function(oj, ko, $) {
-  
+
     function ErrorViewModel() {
       var self = this;
-      // Below are a subset of the ViewModel methods invoked by the ojModule binding
-      // Please reference the ojModule jsDoc for additional available methods.
 
       /**
        * Optional ViewModel method invoked when this ViewModel is about to be
