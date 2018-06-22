@@ -5,13 +5,18 @@
 /*
  * Your dashboard ViewModel code goes here
  */
-define(['ojs/ojcore', 'knockout', 'jquery'],
+define(['ojs/ojcore', 'knockout', 'jquery', 'ojs/ojbutton'],
  function(oj, ko, $) {
-  
+
     function DashboardViewModel() {
       var self = this;
-      // Below are a subset of the ViewModel methods invoked by the ojModule binding
-      // Please reference the ojModule jsDoc for additional available methods.
+
+      // Test: creates an AJAX request
+      self.createAjaxRequest = () => {
+        $.ajax({
+          url: 'https://jsonplaceholder.typicode.com/users',
+        });
+      };
 
       /**
        * Optional ViewModel method invoked when this ViewModel is about to be
@@ -43,7 +48,7 @@ define(['ojs/ojcore', 'knockout', 'jquery'],
 
 
       /**
-       * Optional ViewModel method invoked after the bindings are applied on this View. 
+       * Optional ViewModel method invoked after the bindings are applied on this View.
        * If the current View is retrieved from cache, the bindings will not be re-applied
        * and this callback will not be invoked.
        * @param {Object} info - An object with the following key-value pairs:

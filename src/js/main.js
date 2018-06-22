@@ -60,6 +60,24 @@ require(['ojs/ojcore', 'knockout', 'appController', 'ojs/ojknockout',
       function init() {
         oj.Router.sync().then(
           function () {
+            // Interceptor - Open
+            (function (open) {
+              XMLHttpRequest.prototype.open = function(method, url, async) {
+                console.log(`Request opened!`);
+                this.requestUrl = url;
+                this.requestMethod = method;
+                open.call(this, method, url, async);
+              };
+            })(XMLHttpRequest.prototype.open);
+
+            // Interceptor - Send
+            (function (send) {
+              XMLHttpRequest.prototype.send = function(data) {
+                console.log(`Request made to: ${this.requestUrl}`);
+                send.call(this, data);
+              };
+            })(XMLHttpRequest.prototype.send);
+
             // Bind your ViewModel for the content of the whole page body.
             ko.applyBindings(app, document.getElementById('globalBody'));
           },
@@ -69,7 +87,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'ojs/ojknockout',
         );
       }
 
-      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready 
+      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready
       // event before executing any code that might interact with Cordova APIs or plugins.
       if ($(document.body).hasClass('oj-hybrid')) {
         document.addEventListener("deviceready", init);
