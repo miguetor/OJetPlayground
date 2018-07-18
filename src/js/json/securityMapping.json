@@ -1,10 +1,35 @@
-[
-  {
-    "role": "NORMAL_USER_ROLE",
-    "access": [
-      "dashboard",
-      "orders",
-      "customers"
-    ]
+{
+  "NORMAL_USER_ROLE": {
+    "inheritedAccess": [],
+    "dashboard": {
+      "url": "/dashboard"
+    },
+    "incidents": {
+      "url": "/incidents"
+    },
+    "customers": {
+      "url": "/customers"
+    },
+    "about": {
+      "url": "/about"
+    }
+  },
+  "SALES_USER_ROLE": {
+    "inheritedAccess": ["NORMAL_USER_ROLE"],
+    "orders": {
+      "ordersNav": {
+        "search": {
+          "url": "/orders/ordersNav/search"
+        },
+        "mass": {
+          "url": "/orders/ordersNav/mass"
+        },
+        "url": "/orders/ordersNav"
+      },
+      "url": "/orders"
+    }
+  },
+  "COMP_USER_ROLE": {
+    "inheritedAccess": ["SALES_USER_ROLE"]
   }
-]
+}
