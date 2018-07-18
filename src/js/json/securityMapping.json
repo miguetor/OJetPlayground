@@ -1,0 +1,10 @@
+[
+  {
+    "role": "NORMAL_USER_ROLE",
+    "access": [
+      "dashboard",
+      "orders",
+      "customers"
+    ]
+  }
+]

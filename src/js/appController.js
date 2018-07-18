@@ -3,10 +3,10 @@
  * The Universal Permissive License (UPL), Version 1.0
  */
 
-define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource',
+define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource',
     'ojs/ojoffcanvas'
   ],
-  function(oj, ko) {
+  function(oj, ko, NavigationUtils) {
     function ControllerViewModel() {
       var self = this;
 
@@ -22,26 +22,26 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
         'dashboard': {
           label: 'Dashboard',
           value: 'dashboard',
-          isDefault: true
+          isDefault: true,
         },
         'orders': {
           label: 'Orders',
-          value: 'orders/orders'
+          value: 'orders/orders',
         },
         'incidents': {
           label: 'Incidents',
-          value: 'incidents'
+          value: 'incidents',
         },
         'customers': {
           label: 'Customers',
-          value: 'customers'
+          value: 'customers',
         },
         'about': {
           label: 'About',
-          value: 'about'
+          value: 'about',
         },
         'notFound': {
-          value: 'notFound'
+          value: 'notFound',
         }
       });
 
@@ -71,7 +71,7 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
 
       // Transition handler
       oj.Router.transitionedToState.add(function(result) {
-        console.log(result);
+        // console.log(result);
         if (result.hasChanged) {
           let state = getCurrentGlobalRouterState(self.router);
           if (state) console.log(`Current page: ${state.id}`);
@@ -79,29 +79,7 @@ define(['ojs/ojcore', 'knockout', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarray
         }
       });
 
-      // Navigation setup
-      var navData = [{
-          name: 'Dashboard',
-          id: 'dashboard',
-          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'
-        },
-        {
-          name: 'Orders',
-          id: 'orders',
-          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-fire-icon-24'
-        },
-        {
-          name: 'Customers',
-          id: 'customers',
-          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-people-icon-24'
-        },
-        {
-          name: 'About',
-          id: 'about',
-          iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-info-icon-24'
-        }
-      ];
-      self.navDataSource = new oj.ArrayTableDataSource(navData, {
+      self.navDataSource = new oj.ArrayTableDataSource(NavigationUtils.createNavigationArray(self.router), {
         idAttribute: 'id'
       });
 
