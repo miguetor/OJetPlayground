@@ -1,4 +1,5 @@
 define((require) => {
+  const $  = require('jquery');
   const ko = require('knockout');
   // Instance that is going to be used for the Singleton
   let instance = null;
@@ -17,14 +18,50 @@ define((require) => {
   }
 
   /**
+   * getSecurityMapping - description
+   *
+   * @param  {object} securityMapping Access Security rules for different roles
+   * @param  {array}  roles           Security Mapping with the inherited privileges included
+   * @return {object}                 Security Mapping with the inherited privileges included
+   */
+  function getSecurityMapping(securityMapping, roles) {
+    if (securityMapping && roles && roles.length) {
+      const securityRolesRules = [];
+      let highestPriority = null;
+
+      // Get the security rules for the user's roles
+      for (let i = 0; i < roles.length; i += 1) {
+        if (securityMapping[roles[i]]) {
+          if (highestPriority === null) highestPriority = securityMapping[roles[i]];
+          else if (securityMapping[roles[i]].priority < highestPriority.priority) {
+            highestPriority = securityMapping[roles[i]];
+          }
+        }
+      }
+
+      return highestPriority;
+    }
+
+    return null;
+  }
+
+  /**
    * prototype - Initializes the singleton
    *
    * @returns {void}
    */
   SCAUser.prototype = {
     initialize() {
-      this.sso = ko.observable(null);
-      this.roles = ko.observableArray([]);
+      const self = this;
+
+      self.sso = ko.observable();
+      self.roles = ko.observableArray([]);
+
+      // Get the application map
+      self.getAccessPrivileges = () => $.getJSON('json/securityMapping.json', (securityMapping) => {
+        securityMapping = getSecurityMapping(securityMapping, self.roles());
+        self.securityMapping = securityMapping;
+      });
     }
   };
 

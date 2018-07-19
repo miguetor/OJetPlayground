@@ -60,22 +60,28 @@ requirejs.onError = function (err) {
  * by the modules themselves), we are listing them explicitly to get the references to the 'oj' and 'ko'
  * objects in the callback
  */
-require(['ojs/ojcore', 'knockout', 'appController', 'ojs/ojknockout',
+require(['ojs/ojcore', 'knockout', 'appController', 'user', 'ojs/ojknockout',
   'ojs/ojmodule', 'ojs/ojrouter', 'ojs/ojnavigationlist', 'ojs/ojbutton', 'ojs/ojtoolbar'],
-  function (oj, ko, app) { // this callback gets executed when all required modules are loaded
+  function (oj, ko, app, user) { // this callback gets executed when all required modules are loaded
 
     $(function() {
 
       function init() {
-        oj.Router.sync().then(
-          function () {
-            // Bind your ViewModel for the content of the whole page body.
-            ko.applyBindings(app, document.getElementById('globalBody'));
-          },
-          function (error) {
-            oj.Logger.error('Error in root start: ' + error.message);
-          }
-        );
+        // User mocked info
+        user.sso('miguel.torres@oracle.com');
+        user.roles(['NORMAL_USER_ROLE']);
+        // Get user privileges
+        user.getAccessPrivileges().then(() => {
+          oj.Router.sync().then(
+            function () {
+              // Bind your ViewModel for the content of the whole page body.
+              ko.applyBindings(app, document.getElementById('globalBody'));
+            },
+            function (error) {
+              oj.Logger.error('Error in root start: ' + error.message);
+            }
+          );
+        });
       }
 
       // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready

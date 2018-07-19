@@ -1,0 +1,71 @@
+{
+  "NORMAL_USER_ROLE": {
+    "priority": 3,
+    "dashboard": {
+      "url": "/dashboard"
+    },
+    "incidents": {
+      "url": "/incidents"
+    },
+    "customers": {
+      "url": "/customers"
+    },
+    "about": {
+      "url": "/about"
+    }
+  },
+  "SALES_USER_ROLE": {
+    "priority": 2,
+    "dashboard": {
+      "url": "/dashboard"
+    },
+    "orders": {
+      "ordersNav": {
+        "search": {
+          "url": "/orders/ordersNav/search"
+        },
+        "mass": {
+          "url": "/orders/ordersNav/mass"
+        },
+        "url": "/orders/ordersNav"
+      },
+      "url": "/orders"
+    },
+    "incidents": {
+      "url": "/incidents"
+    },
+    "customers": {
+      "url": "/customers"
+    },
+    "about": {
+      "url": "/about"
+    }
+  },
+  "COMP_USER_ROLE": {
+    "priority": 1,
+    "dashboard": {
+      "url": "/dashboard"
+    },
+    "orders": {
+      "ordersNav": {
+        "search": {
+          "url": "/orders/ordersNav/search"
+        },
+        "mass": {
+          "url": "/orders/ordersNav/mass"
+        },
+        "url": "/orders/ordersNav"
+      },
+      "url": "/orders"
+    },
+    "incidents": {
+      "url": "/incidents"
+    },
+    "customers": {
+      "url": "/customers"
+    },
+    "about": {
+      "url": "/about"
+    }
+  }
+}

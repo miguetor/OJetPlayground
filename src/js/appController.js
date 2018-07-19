@@ -3,10 +3,10 @@
  * The Universal Permissive License (UPL), Version 1.0
  */
 
-define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource',
+define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'user', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource',
     'ojs/ojoffcanvas'
   ],
-  function(oj, ko, NavigationUtils) {
+  function(oj, ko, NavigationUtils, user) {
     function ControllerViewModel() {
       var self = this;
 
@@ -55,17 +55,23 @@ define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'ojs/ojrouter', 'ojs/
       }, 'valueChanged');
 
       // Gets the current general state of the Router
-      function getCurrentGlobalRouterState(router) {
+      function getCurrentGlobalRouterState(router, securityMapping) {
         if (router._childRouters.length) {
           for (let i = 0; i < router._childRouters.length; i++) {
             if (router._childRouters[i]._parentState === router.currentState().id) {
+              if (!securityMapping[router.currentState().id] && router.currentState().label) {
+                router.currentState().canEnter = false;
+                return router.currentState();
+              }
               return getCurrentGlobalRouterState(router._childRouters[i]);
             }
           }
-
-          return router.currentState();
         }
 
+        if (!securityMapping[router.currentState().id] && router.currentState().label) {
+          router.currentState().canEnter = false;
+          return router.currentState();
+        }
         return router.currentState();
       }
 
@@ -73,7 +79,7 @@ define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'ojs/ojrouter', 'ojs/
       oj.Router.transitionedToState.add(function(result) {
         // console.log(result);
         if (result.hasChanged) {
-          let state = getCurrentGlobalRouterState(self.router);
+          let state = getCurrentGlobalRouterState(self.router, user.securityMapping);
           if (state) console.log(`Current page: ${state.id}`);
           else self.router.go('notFound');
         }
