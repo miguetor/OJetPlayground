@@ -10,6 +10,44 @@ define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'user', 'ojs/ojrouter
     function ControllerViewModel() {
       var self = this;
 
+      // Router configure override to add a new propertie that helps to let the listener know if the user us authorized
+      (function (configure) {
+        oj.Router.prototype._configure = configure;
+        oj.Router.prototype.configure = function(option) {
+          let router = this;
+          const hierarchy = [];
+
+          while (router.parent) {
+            hierarchy.push(router);
+            router = router.parent;
+          }
+
+          let securityState = user.securityMapping;
+
+          while (hierarchy.length > 0) {
+            const currentRouter = hierarchy.pop();
+            if (securityState[currentRouter._parentState]) {
+              securityState = securityState[currentRouter._parentState];
+            } else {
+              securityState = null;
+              hierarchy.splice(0, hierarchy.length);
+            }
+          }
+
+          const newRouter = this._configure(option);
+
+          if (newRouter.states) {
+            for (let i = 0, length = newRouter.states.length; i < length; i += 1) {
+              newRouter.states[i].authorized = securityState !== null && securityState[newRouter.states[i].id] !== undefined;
+            }
+          } else if (newRouter.stateFromIdCallback) {
+            newRouter.dynamicStateAuthorization = securityState['{id}'] !== undefined;
+          }
+
+          return newRouter;
+        };
+      })(oj.Router.prototype.configure);
+
       // Media queries for repsonsive layouts
       var smQuery = oj.ResponsiveUtils.getFrameworkQuery(oj.ResponsiveUtils.FRAMEWORK_QUERY_KEY.SM_ONLY);
       self.smScreen = oj.ResponsiveKnockoutUtils.createMediaQueryObservable(smQuery);
@@ -42,6 +80,9 @@ define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'user', 'ojs/ojrouter
         },
         'notFound': {
           value: 'notFound',
+        },
+        'forbidden': {
+          value: 'accessDenied',
         }
       });
 
@@ -51,36 +92,36 @@ define(['ojs/ojcore', 'knockout', 'utils/NavigationUtils', 'user', 'ojs/ojrouter
       self.router.stateId.subscribe((value) => {
         if (value) {
           if (self.router.currentValue()) self.currentPage(self.router.currentValue());
+          else self.currentPage('notFound');
         }
       }, 'valueChanged');
 
       // Gets the current general state of the Router
-      function getCurrentGlobalRouterState(router, securityMapping) {
+      function getCurrentGlobalRouterState(router) {
         if (router._childRouters.length) {
           for (let i = 0; i < router._childRouters.length; i++) {
             if (router._childRouters[i]._parentState === router.currentState().id) {
-              if (!securityMapping[router.currentState().id] && router.currentState().label) {
-                router.currentState().canEnter = false;
-                return router.currentState();
-              }
               return getCurrentGlobalRouterState(router._childRouters[i]);
             }
           }
-        }
 
-        if (!securityMapping[router.currentState().id] && router.currentState().label) {
-          router.currentState().canEnter = false;
           return router.currentState();
         }
+
         return router.currentState();
       }
 
       // Transition handler
       oj.Router.transitionedToState.add(function(result) {
-        // console.log(result);
         if (result.hasChanged) {
-          let state = getCurrentGlobalRouterState(self.router, user.securityMapping);
-          if (state) console.log(`Current page: ${state.id}`);
+          let state = getCurrentGlobalRouterState(self.router);
+          if (state) {
+            if (state._router.dynamicStateAuthorization === false || state.authorized === false) {
+              self.router.go('forbidden');
+            } else {
+              console.log(`Current page: ${state.id}`);
+            }
+          }
           else self.router.go('notFound');
         }
       });

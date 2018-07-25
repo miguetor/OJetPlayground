@@ -5,8 +5,7 @@
 */
 
 define(
-  ['ojs/ojcore', 'knockout', 'jquery',
-  ],
+  ['ojs/ojcore', 'knockout', 'jquery', 'ojs/ojbutton'],
   (oj, ko, $, Report, OrderHeader, OrderHeaderFactory, Converter) => {
     /**
      * SearchViewModel - Constructor for the ViewModel
@@ -15,6 +14,18 @@ define(
      */
     function SearchViewModel() {
       const self = this;
+
+      self.goToOrder1 = () => {
+        oj.Router.rootInstance.go('/orders/details/1');
+      };
+
+      self.goToOrder2 = () => {
+        oj.Router.rootInstance.go('/orders/details/2');
+      };
+
+      self.goToOrder3 = () => {
+        oj.Router.rootInstance.go('/orders/details/3');
+      };
 
       // =========================================================================
       // Lifecycle

@@ -1,6 +1,8 @@
 define((require) => {
   const $  = require('jquery');
   const ko = require('knockout');
+  const securityMapping = JSON.parse(require('text!/json/securityMapping.json'));
+
   // Instance that is going to be used for the Singleton
   let instance = null;
 
@@ -55,13 +57,10 @@ define((require) => {
       const self = this;
 
       self.sso = ko.observable();
-      self.roles = ko.observableArray([]);
+      self.roles = ko.observableArray(['SALES_USER_ROLE']);
 
       // Get the application map
-      self.getAccessPrivileges = () => $.getJSON('json/securityMapping.json', (securityMapping) => {
-        securityMapping = getSecurityMapping(securityMapping, self.roles());
-        self.securityMapping = securityMapping;
-      });
+      self.securityMapping = getSecurityMapping(securityMapping, self.roles());
     }
   };
 

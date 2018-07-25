@@ -20,6 +20,12 @@
       "url": "/dashboard"
     },
     "orders": {
+      "details": {
+        "{id}": {
+          "url": "/orders/details/{id}"
+        },
+        "url": "/orders/details"
+      },
       "ordersNav": {
         "search": {
           "url": "/orders/ordersNav/search"

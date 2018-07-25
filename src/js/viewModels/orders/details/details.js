@@ -1,17 +1,46 @@
 /**
- * Copyright (c) 2014, 2018, Oracle and/or its affiliates.
+ * Copyright (c) 2014, 2017, Oracle and/or its affiliates.
  * The Universal Permissive License (UPL), Version 1.0
  */
-/*
- * Your customer ViewModel code goes here
- */
-define(['ojs/ojcore', 'knockout', 'jquery'],
- function(oj, ko, $) {
+define(
+  ['ojs/ojcore', 'knockout', 'jquery', 'ojs/ojbutton'],
+  (oj, ko) => {
+    /**
+     * Orders section main viewModel
+     * @return {type}  description
+     */
+    function DetailsViewModel() {
+      const self = this;
 
-    function CustomerViewModel() {
-      var self = this;
-      // Below are a subset of the ViewModel methods invoked by the ojModule binding
-      // Please reference the ojModule jsDoc for additional available methods.
+      self.orderNumber = ko.observable();
+      self.goBack = () => {
+        oj.Router.rootInstance.go('orders/ordersNav/search');
+      };
+
+      // =========================================================================
+      // Checks if the state is a valid Request id
+      // =========================================================================
+      self.checkOrderNumber = (stateId) => {
+        let state;
+
+        if (stateId) {
+          if (stateId.toString().match(/^\d+$/)) {
+            state = new oj.RouterState(stateId, {
+              value: stateId
+            }, self.router);
+            self.orderNumber(stateId);
+          }
+        }
+        return state;
+      };
+
+      // =========================================================================
+      // Router Configuration
+      // =========================================================================
+      if (!oj.Router.rootInstance.getChildRouter('orders').getChildRouter('details')) {
+        self.router = oj.Router.rootInstance.getChildRouter('orders').createChildRouter('details').configure(self.checkOrderNumber);
+      }
+      const routerSyncPromise = oj.Router.sync();
 
       /**
        * Optional ViewModel method invoked when this ViewModel is about to be
@@ -24,8 +53,13 @@ define(['ojs/ojcore', 'knockout', 'jquery'],
        * @return {Promise|undefined} - If the callback returns a Promise, the next phase (attaching DOM) will be delayed until
        * the promise is resolved
        */
-      self.handleActivated = function(info) {
-        // Implement if needed
+      self.handleActivated = () => {
+        routerSyncPromise.then(() => {
+          // if there is no Order Number then return to my requests
+          if (!self.orderNumber()) {
+            console.log('Order Number Not Found');
+          }
+        });
       };
 
       /**
@@ -36,10 +70,9 @@ define(['ojs/ojcore', 'knockout', 'jquery'],
        * @param {Node} info.element - DOM element or where the binding is attached. This may be a 'virtual' element (comment node).
        * @param {Function} info.valueAccessor - The binding's value accessor.
        * @param {boolean} info.fromCache - A boolean indicating whether the module was retrieved from cache.
+       * @return {void}
        */
-      self.handleAttached = function(info) {
-        // Implement if needed
-      };
+      self.handleAttached = () => {};
 
 
       /**
@@ -49,10 +82,9 @@ define(['ojs/ojcore', 'knockout', 'jquery'],
        * @param {Object} info - An object with the following key-value pairs:
        * @param {Node} info.element - DOM element or where the binding is attached. This may be a 'virtual' element (comment node).
        * @param {Function} info.valueAccessor - The binding's value accessor.
+       * @return {void}
        */
-      self.handleBindingsApplied = function(info) {
-        // Implement if needed
-      };
+      self.handleBindingsApplied = () => {};
 
       /*
        * Optional ViewModel method invoked after the View is removed from the
@@ -62,9 +94,7 @@ define(['ojs/ojcore', 'knockout', 'jquery'],
        * @param {Function} info.valueAccessor - The binding's value accessor.
        * @param {Array} info.cachedNodes - An Array containing cached nodes for the View if the cache is enabled.
        */
-      self.handleDetached = function(info) {
-        // Implement if needed
-      };
+      self.handleDetached = () => {};
     }
 
     /*
@@ -72,6 +102,6 @@ define(['ojs/ojcore', 'knockout', 'jquery'],
      * each time the view is displayed.  Return an instance of the ViewModel if
      * only one instance of the ViewModel is needed.
      */
-    return new CustomerViewModel();
+    return new DetailsViewModel();
   }
 );

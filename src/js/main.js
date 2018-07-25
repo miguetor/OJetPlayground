@@ -45,14 +45,14 @@ requirejs.config(
 }
 );
 
-requirejs.onError = function (err) {
-    console.log('Something happened');
-    // if (err.requireType === 'timeout') {
-    //     console.log('modules: ' + err.requireModules);
-    // }
-    //
-    // throw err;
-};
+// requirejs.onError = function (err) {
+//     console.log('Something happened');
+//     // if (err.requireType === 'timeout') {
+//     //     console.log('modules: ' + err.requireModules);
+//     // }
+//     //
+//     // throw err;
+// };
 
 /**
  * A top-level require call executed by the Application.
@@ -69,19 +69,18 @@ require(['ojs/ojcore', 'knockout', 'appController', 'user', 'ojs/ojknockout',
       function init() {
         // User mocked info
         user.sso('miguel.torres@oracle.com');
-        user.roles(['NORMAL_USER_ROLE']);
+        user.roles(['SALES_USER_ROLE']);
+
         // Get user privileges
-        user.getAccessPrivileges().then(() => {
-          oj.Router.sync().then(
-            function () {
-              // Bind your ViewModel for the content of the whole page body.
-              ko.applyBindings(app, document.getElementById('globalBody'));
-            },
-            function (error) {
-              oj.Logger.error('Error in root start: ' + error.message);
-            }
-          );
-        });
+        oj.Router.sync().then(
+          function () {
+            // Bind your ViewModel for the content of the whole page body.
+            ko.applyBindings(app, document.getElementById('globalBody'));
+          },
+          function (error) {
+            oj.Logger.error('Error in root start: ' + error.message);
+          }
+        );
       }
 
       // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready

@@ -19,6 +19,10 @@ define(
           value: 'orders/ordersNav/ordersNav',
           isDefault: true,
         },
+        details: {
+          label: 'Order Details View',
+          value: 'orders/details/details'
+        }
       });
 
       /**
