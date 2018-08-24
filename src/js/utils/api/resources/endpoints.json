@@ -1,0 +1,17 @@
+{
+  "testUrl": "https://gxpet.oracle.com",
+  "appreg": {
+    "directPath": "/appreg",
+    "gatewayPath": "/appreg",
+    "endpoints": [{
+        "id": "users",
+        "directPath": "/users",
+        "gatewayPath": "/users",
+        "headers": [{
+            "x-oal-appCode": "SCA"
+          }
+        ]
+      }
+    ]
+  }
+}
