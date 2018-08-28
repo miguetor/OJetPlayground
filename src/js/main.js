@@ -51,7 +51,7 @@ requirejs.config(
  * by the modules themselves), we are listing them explicitly to get the references to the 'oj' and 'ko'
  * objects in the callback
  */
-require(['ojs/ojcore', 'knockout', 'appController', 'ojs/ojknockout',
+require(['ojs/ojcore', 'knockout', 'appController', 'utils/requests/requestsConfig', 'ojs/ojknockout',
   'ojs/ojmodule', 'ojs/ojrouter', 'ojs/ojnavigationlist', 'ojs/ojbutton', 'ojs/ojtoolbar'],
   function (oj, ko, app) { // this callback gets executed when all required modules are loaded
 
@@ -69,7 +69,7 @@ require(['ojs/ojcore', 'knockout', 'appController', 'ojs/ojknockout',
         );
       }
 
-      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready 
+      // If running in a hybrid (e.g. Cordova) environment, we need to wait for the deviceready
       // event before executing any code that might interact with Cordova APIs or plugins.
       if ($(document.body).hasClass('oj-hybrid')) {
         document.addEventListener("deviceready", init);

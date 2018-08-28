@@ -5,8 +5,8 @@
 /*
  * Your application specific code will go here
  */
-define(['ojs/ojcore', 'knockout', 'utils/api/api', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource', 'ojs/ojoffcanvas'],
-  function(oj, ko) {
+define(['ojs/ojcore', 'knockout', 'utils/api/endpoints', 'ojs/ojrouter', 'ojs/ojknockout', 'ojs/ojarraytabledatasource', 'ojs/ojoffcanvas'],
+  function(oj, ko, services) {
      function ControllerViewModel() {
        var self = this;
 
